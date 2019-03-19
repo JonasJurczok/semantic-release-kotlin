@@ -1,4 +1,4 @@
-FROM FROM openjdk:10
+FROM openjdk:10
 
 LABEL "com.github.actions.name"="run kotlin builds"
 LABEL "com.github.actions.description"="run tests/code style and package project"
