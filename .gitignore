@@ -1,0 +1,8 @@
+.idea/
+.kotlintest/
+*.iml
+target/
+
+output.csv
+input.csv
+types.txt
