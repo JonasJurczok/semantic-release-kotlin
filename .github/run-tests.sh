@@ -2,6 +2,8 @@
 
 set -eu
 
-./mwnw clean verify
+git branch
+
+./mvnw clean verify
 
 # TODO: coveralls support

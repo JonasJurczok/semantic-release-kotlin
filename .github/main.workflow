@@ -4,8 +4,14 @@ workflow "Pull Request" {
   resolves = ["Run Tests"]
 }
 
+action "Create merge result" {
+  uses = "./.github/docker"
+  args = ".github/create-merge-result.sh"
+}
+
 action "Run Tests" {
   uses = "./.github/docker"
+  needs = ["Create merge result"]
   args = ".github/run-tests.sh"
 }
 
