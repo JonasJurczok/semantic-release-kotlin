@@ -60,14 +60,10 @@ action "Prepare release PR" {
 
 # releases
 workflow "Releases" {
-  resolves = [
-    "Release",
-    "Prepare release PR",
-  ]
+  resolves = ["Release"]
   on = "push"
 }
 
-# has tag -> create actual release
 action "Check is tag" {
   uses = "actions/bin/filter@d820d56839906464fb7a57d1b4e1741cf5183efa"
   needs = ["Check for master"]
