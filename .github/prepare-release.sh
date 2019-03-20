@@ -61,8 +61,8 @@ git config --global user.name "Github Actions CI"
 git commit -am"prepare release ${VERSION}"
 git tag "${VERSION}"
 
-git push --force
-git push --force --tags
+git push origin "$SOURCE" --force
+git push origin --force --tags
 
 # open PR
 
