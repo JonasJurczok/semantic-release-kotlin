@@ -13,6 +13,7 @@ action "Run Tests" {
   uses = "./.github/docker"
   needs = ["Create merge result"]
   args = ".github/run-tests.sh"
+  secrets = ["COVERALLS_TOKEN"]
 }
 
 # pull-request cleanup
