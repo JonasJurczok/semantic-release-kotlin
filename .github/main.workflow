@@ -27,12 +27,9 @@ action "branch cleanup" {
   secrets = ["GITHUB_TOKEN"]
 }
 
-# releases
-workflow "Releases" {
-  resolves = [
-    "Release",
-    "Prepare release PR",
-  ]
+# prepare release
+workflow "Prepare release" {
+  resolves = ["Prepare release PR"]
   on = "push"
 }
 
@@ -41,7 +38,6 @@ action "Check for master" {
   args = "branch master"
 }
 
-# no tag -> create release PR
 action "Check is not tag" {
   uses = "actions/bin/filter@d820d56839906464fb7a57d1b4e1741cf5183efa"
   args = "not tag"
@@ -60,6 +56,15 @@ action "Prepare release PR" {
   needs = ["Tests"]
   secrets = ["GITHUB_TOKEN"]
   args = ".github/prepare-release.sh"
+}
+
+# releases
+workflow "Releases" {
+  resolves = [
+    "Release",
+    "Prepare release PR",
+  ]
+  on = "push"
 }
 
 # has tag -> create actual release
