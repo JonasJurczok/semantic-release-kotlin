@@ -11,3 +11,14 @@ export MAVEN_OPTS=-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf
 
 
 
+./mvnw versions:set versions:commit -B -DnewVersion="2"
+
+
+git config --global user.email "${GITHUB_ACTOR}@github-actions.com"
+git config --global user.name "$GITHUB_ACTOR"
+
+git commit -am"prepare release 2"
+git tag 2
+
+git push --set-upstream origin fix-workflow
+git push --set-upstream origin --tags
