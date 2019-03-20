@@ -55,8 +55,8 @@ export MAVEN_OPTS=-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf
 
 # TODO: generate changelog
 
-git config --global user.email "github-actions-ci@github.com"
-git config --global user.name "Github Actions CI"
+git config --global user.email "$GH_EMAIL"
+git config --global user.name "$GH_USER"
 
 git commit -am"prepare release ${VERSION}"
 git tag "${VERSION}"
