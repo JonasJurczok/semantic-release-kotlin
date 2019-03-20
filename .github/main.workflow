@@ -1,12 +1,19 @@
 # pull-requests
 workflow "Pull Request" {
   on = "pull_request"
-  resolves = ["Run Tests"]
+  resolves = ["Run PR tests"]
 }
 
-action "Run Tests" {
+action "Create merge result" {
   uses = "./.github/docker"
+  args = ".github/create-merge-result.sh"
+}
+
+action "Run PR tests" {
+  uses = "./.github/docker"
+  needs = ["Create merge result"]
   args = ".github/run-tests.sh"
+  secrets = ["COVERALLS_TOKEN"]
 }
 
 # pull-request cleanup
@@ -22,7 +29,10 @@ action "branch cleanup" {
 
 # releases
 workflow "Releases" {
-  resolves = ["Release"]
+  resolves = [
+    "Release",
+    "Prepare release PR",
+  ]
   on = "push"
 }
 
@@ -31,7 +41,8 @@ action "Check for master" {
   args = "branch master"
 }
 
-action "Check not tag" {
+# no tag -> create release PR
+action "Check is not tag" {
   uses = "actions/bin/filter@d820d56839906464fb7a57d1b4e1741cf5183efa"
   args = "not tag"
   needs = ["Check for master"]
@@ -40,12 +51,36 @@ action "Check not tag" {
 action "Tests" {
   uses = "./.github/docker"
   args = ".github/run-tests.sh"
-  needs = ["Check not tag"]
+  secrets = ["COVERALLS_TOKEN"]
+  needs = ["Check is not tag"]
+}
+
+action "Prepare release PR" {
+  uses = "./.github/docker"
+  needs = ["Tests"]
+  secrets = ["GITHUB_TOKEN"]
+  args = ".github/prepare-release.sh"
+}
+
+# has tag -> create actual release
+action "Check is tag" {
+  uses = "actions/bin/filter@d820d56839906464fb7a57d1b4e1741cf5183efa"
+  needs = ["Check for master"]
+  args = "tag"
+}
+
+action "Verify release build" {
+  uses = "./.github/docker"
+  args = ".github/run-tests.sh"
+  secrets = ["COVERALLS_TOKEN"]
+  needs = ["Check is tag"]
 }
 
 action "Release" {
   uses = "./.github/docker"
+  needs = ["Verify release build"]
   args = ".github/release.sh"
-  needs = ["Tests"]
   secrets = ["GITHUB_TOKEN"]
 }
+
+
