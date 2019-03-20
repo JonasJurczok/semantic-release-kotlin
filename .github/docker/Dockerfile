@@ -7,6 +7,9 @@ LABEL "com.github.actions.color"="gray-dark"
 
 LABEL version="1.0.0"
 
+RUN apt-get update -y
+RUN apt-get install curl jq -y
+
 COPY "run.sh" "/run.sh"
 RUN chmod +x /run.sh
 ENTRYPOINT ["/run.sh"]
