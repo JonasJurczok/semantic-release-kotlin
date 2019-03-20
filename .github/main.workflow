@@ -29,7 +29,7 @@ action "branch cleanup" {
 
 # prepare release
 workflow "Prepare release" {
-  resolves = ["Prepare release PR"]
+  resolves = ["push"]
   on = "push"
 }
 
@@ -56,6 +56,18 @@ action "Prepare release PR" {
   needs = ["Tests"]
   secrets = ["GITHUB_TOKEN"]
   args = ".github/prepare-release.sh"
+}
+
+action "push" {
+  uses = "ludeeus/action-push@master"
+  env = {
+    ACTION_MAIL = "octocat@octocat.org"
+    ACTION_NAME = "octocat"
+    ACTION_BRANCH = "prepare-release"
+    ACTION_MESSAGE = "Action commit"
+  }
+  needs = ["Prepare release PR"]
+  secrets = ["GITHUB_TOKEN"]
 }
 
 # releases
