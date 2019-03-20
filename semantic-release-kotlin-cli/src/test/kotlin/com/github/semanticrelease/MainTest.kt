@@ -6,7 +6,7 @@ import io.kotlintest.specs.FeatureSpec
 class Test : FeatureSpec( {
     feature("Test1") {
         scenario("Test") {
-            "Test".shouldStartWith("TE")
+            "Test".shouldStartWith("Te")
         }
     }
 })

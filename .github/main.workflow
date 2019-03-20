@@ -41,6 +41,7 @@ action "Check for master" {
   args = "branch master"
 }
 
+# no tag -> create release PR
 action "Check is not tag" {
   uses = "actions/bin/filter@d820d56839906464fb7a57d1b4e1741cf5183efa"
   args = "not tag"
@@ -54,6 +55,14 @@ action "Tests" {
   needs = ["Check is not tag"]
 }
 
+action "Prepare release PR" {
+  uses = "./.github/docker"
+  needs = ["Tests"]
+  secrets = ["GITHUB_TOKEN"]
+  args = ".github/prepare-release.sh"
+}
+
+# has tag -> create actual release
 action "Check is tag" {
   uses = "actions/bin/filter@d820d56839906464fb7a57d1b4e1741cf5183efa"
   needs = ["Check for master"]
@@ -74,9 +83,4 @@ action "Release" {
   secrets = ["GITHUB_TOKEN"]
 }
 
-action "Prepare release PR" {
-  uses = "./.github/docker"
-  needs = ["Tests"]
-  secrets = ["GITHUB_TOKEN"]
-  args = ".github/prepare-release.sh"
-}
+
