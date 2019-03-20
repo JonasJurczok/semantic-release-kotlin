@@ -62,6 +62,7 @@ git config --global user.name "$GITHUB_ACTOR"
 git commit -am"prepare release ${VERSION}"
 git tag "${VERSION}"
 
+: <<'END'
 git push --set-upstream origin "$SOURCE"
 git push --set-upstream origin --tags
 
@@ -90,3 +91,5 @@ else
 
   echo $?
 fi
+
+END
