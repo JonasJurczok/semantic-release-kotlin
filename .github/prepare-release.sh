@@ -50,7 +50,7 @@ DATE=$(date +"%Y%m%d%H%M%S")
 VERSION="0.1.${DATE}"
 
 # version bump
-./mvnw versions:set -dnewVersion="${VERSION}"
+./mvnw versions:set -DnewVersion="${VERSION}"
 
 # TODO: generate changelog
 
