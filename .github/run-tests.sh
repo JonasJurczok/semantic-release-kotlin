@@ -2,10 +2,8 @@
 
 set -eu
 
-./mvnw dependency:resolve
-
 git branch
 
-./mvnw clean verify
+./mvnw -q clean verify
 
 # TODO: coveralls support
