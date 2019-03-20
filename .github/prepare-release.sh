@@ -31,7 +31,8 @@ PULLS_URL=$REPO_URL/pulls
 GIT_DESCRIBE=$(git describe --tags)
 GIT_TAG=$(echo "$GIT_DESCRIBE" | cut -d"-" -f1)
 GIT_COMMIT_COUNT=$(echo "$GIT_DESCRIBE" | cut -d"-" -f2)
-GIT_COMMIT_HASH=$(echo "$GIT_DESCRIBE" | cut -d"-" -f3)
+
+echo "Found tag $GIT_TAG with $GIT_COMMIT_COUNT commits since."
 
 if [[ "$GIT_COMMIT_COUNT" == "0" ]]; then
   echo "No commits since last release. Aborting".
@@ -55,8 +56,8 @@ export MAVEN_OPTS=-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf
 
 # TODO: generate changelog
 
-git config --global user.email "$GH_EMAIL"
-git config --global user.name "$GH_USER"
+git config --global user.email "${GITHUB_ACTOR}@github-actions.com"
+git config --global user.name "$GITHUB_ACTOR"
 
 git commit -am"prepare release ${VERSION}"
 git tag "${VERSION}"
