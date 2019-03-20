@@ -1,5 +1,5 @@
 package com.github.semanticrelease
 
 fun main() {
-    println("Hello World")
+    println("Hello World 2")
 }
