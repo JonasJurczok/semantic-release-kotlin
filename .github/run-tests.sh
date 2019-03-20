@@ -2,10 +2,9 @@
 
 set -eu
 
-git branch
+BRANCH=$(git branch | grep "*")
+echo "Working on branch ${BRANCH}"
 
-./mvnw -B clean verify -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+export MAVEN_OPTS=-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
 
-./mvnw coveralls:report -DrepoToken="${COVERALLS_TOKEN}"
-
-# TODO: coveralls support
+./mvnw -B clean test jacoco:report coveralls:report -DrepoToken="${COVERALLS_TOKEN}"
