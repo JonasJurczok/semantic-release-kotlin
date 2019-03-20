@@ -52,7 +52,7 @@ VERSION="0.1.${DATE}"
 
 # version bump
 export MAVEN_OPTS=-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
-./mvnw versions:set -B -DnewVersion="${VERSION}"
+./mvnw versions:set versions:commit -B -DnewVersion="${VERSION}"
 
 # TODO: generate changelog
 
@@ -62,7 +62,6 @@ git config --global user.name "$GITHUB_ACTOR"
 git commit -am"prepare release ${VERSION}"
 git tag "${VERSION}"
 
-: <<'END'
 git push --set-upstream origin "$SOURCE"
 git push --set-upstream origin --tags
 
@@ -91,5 +90,3 @@ else
 
   echo $?
 fi
-
-END
