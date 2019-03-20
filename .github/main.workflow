@@ -54,11 +54,7 @@ action "Tests" {
 action "Prepare release PR" {
   uses = "./.github/docker"
   needs = ["Tests"]
-  secrets = [
-    "GITHUB_TOKEN",
-    "GH_EMAIL",
-    "GH_USER"
-  ]
+  secrets = ["GITHUB_TOKEN"]
   args = ".github/prepare-release.sh"
 }
 
