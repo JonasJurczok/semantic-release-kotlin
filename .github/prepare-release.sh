@@ -50,9 +50,13 @@ DATE=$(date +"%Y%m%d%H%M%S")
 VERSION="0.1.${DATE}"
 
 # version bump
-./mvnw versions:set -DnewVersion="${VERSION}"
+export MAVEN_OPTS=-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+./mvnw versions:set -B -DnewVersion="${VERSION}"
 
 # TODO: generate changelog
+
+git config --global user.email "github-actions-ci@github.com"
+git config --global user.name "Github Actions CI"
 
 git commit -am"prepare release ${VERSION}"
 git tag "${VERSION}"
