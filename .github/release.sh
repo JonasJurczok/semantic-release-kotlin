@@ -24,15 +24,6 @@ API_HEADER="Accept: application/vnd.github.${API_VERSION}+json"
 # TODO: get latest tag and #commits since tag
 # TODO
 
-# On master Push
-# If not tag
-# If #commits since last tag > 0
-# Create release branch mit change log und Version bump
-# commit & tag
-# Force push
-# If no pr exists, create pr
-
-
 # [13:13, 16.3.2019] Jonas Jurczok: Dann für das tatsächliche Release
 # On master push
 # If tag

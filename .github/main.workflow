@@ -4,9 +4,15 @@ workflow "Pull Request" {
   resolves = ["Run PR tests"]
 }
 
+action "Check PR state" {
+  uses = "actions/bin/filter@d820d56839906464fb7a57d1b4e1741cf5183efa"
+  args = "not action closed"
+}
+
 action "Create merge result" {
   uses = "./.github/docker"
   args = ".github/create-merge-result.sh"
+  needs = ["Check PR state"]
 }
 
 action "Run PR tests" {
