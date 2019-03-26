@@ -16,3 +16,5 @@ if [[ "$ACTION" != "closed" ]] && [[ "$MERGED" == "false" ]]; then
   git checkout "$BASE"
   git merge "$HEAD"
 fi
+
+date
