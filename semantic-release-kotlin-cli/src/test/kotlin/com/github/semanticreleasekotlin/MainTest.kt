@@ -1,4 +1,4 @@
-package com.github.semanticrelease
+package com.github.semanticreleasekotlin
 
 import io.kotlintest.matchers.string.shouldStartWith
 import io.kotlintest.specs.FeatureSpec
