@@ -17,7 +17,7 @@ echo "Repository $GITHUB_REPOSITORY"
 # Prepare the headers
 API_VERSION=v3
 AUTH_HEADER="Authorization: token ${GITHUB_TOKEN}"
-HEADER="Accept: application/vnd.github.${API_VERSION}+json"
+HEADER="Accept: application/vnd.github.${API_VERSION}+json application/vnd.github.shadow-cat-preview"
 HEADER="${HEADER}; application/vnd.github.antiope-preview+json"
 
 BASE=https://api.github.com
@@ -62,8 +62,8 @@ git config --global user.name "$GITHUB_ACTOR"
 git commit -am"prepare release ${VERSION}"
 git tag "${VERSION}"
 
-git push --set-upstream origin "$SOURCE"
-git push --set-upstream origin --tags
+git push --set-upstream origin "$SOURCE" --force
+git push --set-upstream origin --tags --force
 
 # open PR
 
@@ -78,13 +78,23 @@ echo "Response ref: ${PR}"
 if [[ "${PR}" == "${SOURCE}" ]]; then
   echo "Pull request from ${SOURCE} to ${TARGET} is already open!"
 
+  PR_ID=$(echo "${RESPONSE}" | jq --raw-output '.[] | .id')
+
+  TITLE="Prepare release ${VERSION}"
+  BODY="This is an automated pull request to prepare release ${VERSION}"
+
+  # Post the pull request
+  DATA="{\"title\":\"${TITLE}\", \"body\": \"${BODY}\", \"base\":\"${TARGET}\", \"head\":\"${SOURCE}\", \"draft\": true}"
+  echo "curl --user ${GITHUB_ACTOR} -X POST --data ${DATA} ${PULLS_URL}"
+  curl -sSL -H "${AUTH_HEADER}" -H "${HEADER}" --user "${GITHUB_ACTOR}" -X POST --data "${DATA}" "${PULLS_URL}/${PR_ID}"
+
 # Option 2: Open a new pull request
 else
   TITLE="Prepare release ${VERSION}"
   BODY="This is an automated pull request to prepare release ${VERSION}"
 
   # Post the pull request
-  DATA="{\"title\":\"${TITLE}\", \"base\":\"${TARGET}\", \"head\":\"${SOURCE}\"}"
+  DATA="{\"title\":\"${TITLE}\", \"body\": \"${BODY}\", \"base\":\"${TARGET}\", \"head\":\"${SOURCE}\", \"draft\": true}"
   echo "curl --user ${GITHUB_ACTOR} -X POST --data ${DATA} ${PULLS_URL}"
   curl -sSL -H "${AUTH_HEADER}" -H "${HEADER}" --user "${GITHUB_ACTOR}" -X POST --data "${DATA}" ${PULLS_URL}
 
