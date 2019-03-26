@@ -53,7 +53,6 @@ action "Check is not tag" {
 action "Tests" {
   uses = "./.github/docker"
   args = ".github/run-tests.sh"
-  secrets = ["COVERALLS_TOKEN"]
   needs = ["Check is not tag"]
 }
 
