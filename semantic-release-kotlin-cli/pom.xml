@@ -27,7 +27,7 @@
                         <configuration>
                             <archive>
                                 <manifest>
-                                    <mainClass>com.github.semanticrelease.MainKt</mainClass>
+                                    <mainClass>com.github.semanticreleasekotlin.MainKt</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>

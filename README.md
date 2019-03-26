@@ -31,3 +31,10 @@ The keywords that can be used are slightly different to improve commit message r
 * Performance
 * Test
 * Chore
+
+## Syntax
+Bugfix: This is a bugfix
+
+Bugfix: - Fix 1
+ - Fix 2
+ - Fix 3
