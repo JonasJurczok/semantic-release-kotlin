@@ -13,6 +13,7 @@ if [[ "$ACTION" != "closed" ]] && [[ "$MERGED" == "false" ]]; then
 
   echo "Creating merge result for head $HEAD and base $BASE"
 
+  git checkout "$BASE"
   git checkout "$HEAD"
   git merge "$BASE"
 fi
