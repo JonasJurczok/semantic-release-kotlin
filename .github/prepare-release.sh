@@ -77,7 +77,7 @@ echo "Response ref: ${PR}"
 if [[ "${PR}" == "${SOURCE}" ]]; then
   echo "Pull request from ${SOURCE} to ${TARGET} is already open. Updating..."
 
-  PR_ID=$(echo "${RESPONSE}" | jq --raw-output '.[] | .id')
+  PR_ID=$(echo "${RESPONSE}" | jq --raw-output '.[] | .number')
   PULLS_URL="${PULLS_URL}/${PR_ID}"
 
   METHOD=PATCH
@@ -88,6 +88,6 @@ BODY="This is an automated pull request to prepare release ${VERSION}"
 
 # Post the pull request
 DATA="{\"title\":\"${TITLE}\", \"body\": \"${BODY}\", \"base\":\"${TARGET}\", \"head\":\"${SOURCE}\", \"draft\": true}"
-echo "curl --user ${GITHUB_ACTOR} -X POST --data ${DATA} ${PULLS_URL}"
+echo "curl --user ${GITHUB_ACTOR} -X ${METHOD} --data ${DATA} ${PULLS_URL}"
 curl -sSL -H "${AUTH_HEADER}" -H "${HEADER}" --user "${GITHUB_ACTOR}" -X "${METHOD}" --data "${DATA}" "${PULLS_URL}"
 echo $?
