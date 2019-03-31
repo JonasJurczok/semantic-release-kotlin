@@ -17,8 +17,7 @@ echo "Repository $GITHUB_REPOSITORY"
 # Prepare the headers
 API_VERSION=v3
 AUTH_HEADER="Authorization: token ${GITHUB_TOKEN}"
-HEADER="Accept: application/vnd.github.${API_VERSION}+json application/vnd.github.shadow-cat-preview"
-HEADER="${HEADER}; application/vnd.github.antiope-preview+json"
+HEADER="Accept: application/vnd.github.shadow-cat-preview, application/vnd.github.antiope-preview+json, application/vnd.github.${API_VERSION}+json"
 
 BASE=https://api.github.com
 REPO_URL="${BASE}/repos/${GITHUB_REPOSITORY}"
