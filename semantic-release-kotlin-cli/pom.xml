@@ -18,6 +18,13 @@
             <artifactId>kotlin-argparser</artifactId>
             <version>2.0.7</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.mockk</groupId>
+            <artifactId>mockk</artifactId>
+            <version>1.9.3</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
