@@ -12,6 +12,5 @@ fun main(args: Array<String>) = mainBody {
 
     val config: Config = ArgParser(args).parseInto(::Config)
 
-    println(args)
-    println(config)
+    CLI(config).run(System.out)
 }

@@ -1,7 +1,7 @@
 package com.github.semanticreleasekotlin
 
-import com.github.semanticreleasekotlin.tools.Logger
 import com.github.semanticreleasekotlin.tools.OS
+import org.slf4j.LoggerFactory
 import java.io.File
 import java.util.Optional
 
@@ -23,9 +23,9 @@ import java.util.Optional
  *   - features
  */
 class Changelog {
-    val versions: MutableMap<String, Version> = HashMap()
-    val unreleased: MutableList<ChangelogEntry> = mutableListOf()
-    var latest: Optional<Version> = Optional.empty()
+    private val versions: MutableMap<String, Version> = HashMap()
+    private val unreleased: MutableList<ChangelogEntry> = mutableListOf()
+    private var latest: Optional<Version> = Optional.empty()
 
     fun hasUnreleasedChanges(): Boolean {
         return unreleased.size > 0
@@ -37,25 +37,25 @@ class Changelog {
                 .maxBy { type -> type.ordinal }
 
         if (changeType == null) {
-            Logger.log("No unreleased changes found.")
+            logger.info("No unreleased changes found.")
             return Optional.empty()
         }
 
         lateinit var version: Version
-        if (latest.isPresent) {
-            version = incrementVersion(latest.get(), changeType)
+        version = if (latest.isPresent) {
+            incrementVersion(latest.get(), changeType)
         } else {
-            Logger.log("No previous version found. Starting with [0.1.0]")
-            version = Version(0,1,0)
+            logger.info("No previous version found. Starting with [0.1.0]")
+            Version(0,1,0)
         }
 
         unreleased.forEach { entry ->
-            Logger.log("Adding entry [$entry] to version [${version.asString()}].")
+            logger.info("Adding entry [{}] to version [{}].", entry, version.asString())
             version.addChange(entry)
         }
         unreleased.clear()
 
-        versions.put(version.asString(), version)
+        versions[version.asString()] = version
 
         return Optional.of(version)
     }
@@ -65,15 +65,13 @@ class Changelog {
         var minor = version.minor
         var patch = version.patch
 
-        if (changeType.equals(ChangeType.MAJOR)) {
-            major += 1
-        } else if (changeType.equals(ChangeType.MINOR)) {
-            minor += 1
-        } else if (changeType.equals(ChangeType.PATCH)) {
-            patch += 1
+        when (changeType) {
+            ChangeType.MAJOR -> major += 1
+            ChangeType.MINOR -> minor += 1
+            ChangeType.PATCH -> patch += 1
         }
 
-        Logger.log("Incremented version from [${version.asString()}] to [$major.$minor.$patch].")
+        logger.info("Incremented version from [${version.asString()}] to [$major.$minor.$patch].")
 
         return Version(major, minor, patch)
     }
@@ -87,10 +85,10 @@ class Changelog {
     }
 
     private fun addVersion(version: Version) {
-        versions.put(version.asString(), version);
+        versions[version.asString()] = version
 
-        if (latest.isPresent()) {
-            if (latest.get().compareTo(version) < 0) {
+        if (latest.isPresent) {
+            if (latest.get() < version) {
                 latest = Optional.of(version)
             }
         } else {
@@ -99,6 +97,7 @@ class Changelog {
     }
 
     companion object {
+        private val logger = LoggerFactory.getLogger(Changelog::class.java)
         internal var command = "git log --format=\"%d||%B\" --reverse "
 
         fun fromGit(dir: File, from: Version? = null, to: Version? = null): Changelog {
@@ -108,14 +107,14 @@ class Changelog {
              * iterate through tags until head reached
              */
 
-            Logger.log("Starting parsing git tree ${dir} with version from $from to $to.")
+            logger.info("Starting parsing git tree [{}] with version from [{}] to [{}].", dir, from, to)
 
             var command = this.command
 
             if (from != null) {
                 command += "${from.asString()}.."
             }
-            command += if (to != null) to.asString() else "HEAD"
+            command += to?.asString() ?: "HEAD"
 
             val regex = Regex("(\\(tag: (.*)\\))?(\\|\\|)(.*)")
 
@@ -125,7 +124,7 @@ class Changelog {
 
             OS.execute(dir, command) { sequence: Sequence<String> ->
 
-                sequence.forEach { line: String ->
+                sequence.filter { line -> line.isNotBlank() }.forEach { line: String ->
 
                     val matchResult = regex.find(line)
 
@@ -135,7 +134,7 @@ class Changelog {
                         tag = matchResult.groups[2]?.value
                         message = matchResult.groups[4]?.value ?: ""
                     }
-                    Logger.log("Processing message [$message] and tag [$tag].")
+                    logger.debug("Processing message [$message] and tag [$tag].")
 
                     val entry = ChangelogEntry.fromString(message)
 
@@ -143,7 +142,7 @@ class Changelog {
 
                     if (tag != null) {
                         // we have a tag, start a new version
-                        Logger.log("Found tag ${tag}")
+                        logger.debug("Found tag [{}].", tag)
 
                         val version = Version.fromString(tag)
 

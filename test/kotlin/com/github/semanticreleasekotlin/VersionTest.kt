@@ -20,13 +20,13 @@ class VersionTest : FeatureSpec({
             Changelog.command = "./git.sh "
 
             val currentVersion = Version(0,1,0);
-            val log = Changelog.fromGit(dir = File("../test/git/2v_unreleased"), from = currentVersion);
+            val log = Changelog.fromGit(dir = File("src/test/git/2v_unreleased"), from = currentVersion);
 
             log.versions().size.shouldBe(2)
             log.hasUnreleasedChanges().shouldBeTrue()
 
             val optionalRelease = log.newRelease()
-            log.versions().size.shouldBe(3)
+            log.versions.size.shouldBe(3)
 
             optionalRelease.isPresent.shouldBeTrue()
 
