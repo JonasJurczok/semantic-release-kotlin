@@ -1,7 +1,7 @@
 package com.github.semanticreleasekotlin
 
 data class Version (val major: Int = 0, val minor: Int = 0, val patch: Int = 0) : Comparable<Version> {
-    val changes: MutableMap<Category, MutableList<ChangelogEntry>> = mutableMapOf()
+    private val changes: MutableMap<Category, MutableList<ChangelogEntry>> = mutableMapOf()
 
     companion object {
 

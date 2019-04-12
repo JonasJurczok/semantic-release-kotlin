@@ -14,17 +14,37 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.github.semantic-release-kotlin</groupId>
+            <artifactId>semantic-release-kotlin</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.xenomachina</groupId>
             <artifactId>kotlin-argparser</artifactId>
             <version>2.0.7</version>
         </dependency>
 
         <dependency>
-            <groupId>io.mockk</groupId>
-            <artifactId>mockk</artifactId>
-            <version>1.9.3</version>
-            <scope>test</scope>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.11.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.11.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>2.11.2</version>
+        </dependency>
+
     </dependencies>
 
     <build>

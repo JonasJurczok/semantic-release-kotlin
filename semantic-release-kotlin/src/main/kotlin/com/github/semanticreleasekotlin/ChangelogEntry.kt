@@ -1,6 +1,6 @@
 package com.github.semanticreleasekotlin
 
-import com.github.semanticreleasekotlin.tools.Logger
+import org.slf4j.LoggerFactory
 import java.util.Optional
 
 /**
@@ -8,6 +8,9 @@ import java.util.Optional
  */
 data class ChangelogEntry(val category: Category, val description: String) {
     companion object {
+
+        private val logger = LoggerFactory.getLogger(ChangelogEntry::class.java)
+
         fun fromString(input: String): Optional<ChangelogEntry> {
 
             val keyword = input.trim().substringBefore(":")
@@ -15,14 +18,14 @@ data class ChangelogEntry(val category: Category, val description: String) {
             val category = Category.getLookupMap()[keyword]
 
             if (category == null) {
-                Logger.log("Could not find category for input [$input].")
+                logger.debug("Could not find category for input [$input].")
                 return Optional.empty()
             }
 
             val description = input.substringAfter(":")
             val entry = ChangelogEntry(category, description.trim())
 
-            Logger.log("Created changelogentry $entry")
+            logger.info("Created changelog entry [{}].", entry)
 
             return Optional.of(entry)
         }
