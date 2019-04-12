@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN">
+<Configuration status="debug">
 
     <Appenders>
         <Console name="Console" target="SYSTEM_ERR">
@@ -8,7 +8,9 @@
     </Appenders>
 
     <Loggers>
-        <Root level="trace">
+        <Logger name="com.github.semanticreleasekotlin" level="warn" additivity="true"/>
+
+        <Root level="warn" additivity="true">
             <AppenderRef ref="Console"/>
         </Root>
     </Loggers>

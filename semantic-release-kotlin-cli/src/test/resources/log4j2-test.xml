@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" packages="com.github.semanticreleasekotlin.tools">
+
+    <Appenders>
+        <Console name="Console" target="SYSTEM_ERR">
+            <PatternLayout pattern="%msg%n"/>
+        </Console>
+
+        <StoringAppender name="StoringAppender"/>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="com.github.semanticreleasekotlin" level="warn">
+            <AppenderRef ref="StoringAppender"/>
+        </Logger>
+
+        <Root level="warn">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>

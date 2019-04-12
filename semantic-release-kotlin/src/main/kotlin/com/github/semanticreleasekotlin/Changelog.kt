@@ -1,5 +1,7 @@
 package com.github.semanticreleasekotlin
 
+import com.github.semanticreleasekotlin.Changelog.Companion.ParserState.LAST_VERSION
+import com.github.semanticreleasekotlin.Changelog.Companion.ParserState.NEW_VERSION
 import com.github.semanticreleasekotlin.tools.OS
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -34,7 +36,7 @@ class Changelog {
     fun newRelease(): Optional<Version> {
         val changeType = unreleased.map { entry -> entry.category }
                 .map { category -> category.changeType }
-                .maxBy { type -> type.ordinal }
+                .minBy { type -> type.ordinal }
 
         if (changeType == null) {
             logger.info("No unreleased changes found.")
@@ -98,7 +100,14 @@ class Changelog {
 
     companion object {
         private val logger = LoggerFactory.getLogger(Changelog::class.java)
-        internal var command = "git log --format=\"%d||%B\" --reverse "
+        private val command = "git log --format=\"%d||%B\" --reverse "
+        private var overwriteCommand: String? = null
+        private var parserState: ParserState = LAST_VERSION
+
+        private enum class ParserState {
+            LAST_VERSION,
+            NEW_VERSION
+        }
 
         fun fromGit(dir: File, from: Version? = null, to: Version? = null): Changelog {
             /**
@@ -109,14 +118,14 @@ class Changelog {
 
             logger.info("Starting parsing git tree [{}] with version from [{}] to [{}].", dir, from, to)
 
-            var command = this.command
+            var command = overwriteCommand ?: this.command
 
             if (from != null) {
                 command += "${from.asString()}.."
             }
             command += to?.asString() ?: "HEAD"
 
-            val regex = Regex("(\\(tag: (.*)\\))?(\\|\\|)(.*)")
+            val regex = Regex("(\\(tag: (.*)\\))?(\\|\\|)?(.*)")
 
             val changelog = Changelog()
             // iterate through the log in chronological orders
@@ -128,17 +137,31 @@ class Changelog {
 
                     val matchResult = regex.find(line)
 
-                    var message = line
-                    var tag: String? = null
-                    if (matchResult != null) {
-                        tag = matchResult.groups[2]?.value
-                        message = matchResult.groups[4]?.value ?: ""
+                    val message = matchResult?.groups?.get(4)?.value ?: ""
+                    val tag = matchResult?.groups?.get(2)?.value
+                    val isNewCommit = matchResult?.groups?.get(3) != null
+                    if (tag != null) {
+                        parserState = LAST_VERSION
+                    } else if (isNewCommit) {
+                        parserState = NEW_VERSION
                     }
-                    logger.debug("Processing message [$message] and tag [$tag].")
+                    logger.debug("Processing message [{}] and tag [{}] for new commit [{}] and parser state [{}].", message, tag, isNewCommit, parserState)
 
                     val entry = ChangelogEntry.fromString(message)
 
-                    entry.ifPresent { e -> changes.add(e) }
+                    entry.ifPresent {
+                        when(parserState) {
+                            LAST_VERSION -> {
+                                val latest = changelog.latest
+                                latest.ifPresentOrElse( {
+                                    version -> version.addChange(entry.get())
+                                }, {
+                                    changes.add(entry.get())
+                                })
+                            }
+                            NEW_VERSION -> changes.add(entry.get())
+                        }
+                    }
 
                     if (tag != null) {
                         // we have a tag, start a new version
@@ -158,6 +181,14 @@ class Changelog {
             }
 
             return changelog
+        }
+
+        fun overwriteCommand(command: String) {
+            overwriteCommand = command
+        }
+
+        fun resetCommand() {
+            overwriteCommand = null
         }
     }
 
