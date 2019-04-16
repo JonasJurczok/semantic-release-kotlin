@@ -19,18 +19,18 @@ AUTH_HEADER="Authorization: token ${GITHUB_TOKEN}"
 API_VERSION=v3
 API_HEADER="Accept: application/vnd.github.${API_VERSION}+json"
 
+# Tag is checked before
 
+# build release
+# TODO: upload to maven central
+VERSION=$(./mvnw org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version | grep -Ev "Download" -E  | grep -Ev "INFO")
+./mvnw clean verify
 
-# TODO: get latest tag and #commits since tag
-# TODO
+git config --global user.email "${GITHUB_ACTOR}@github-actions.com"
+git config --global user.name "$GITHUB_ACTOR"
 
-# [13:13, 16.3.2019] Jonas Jurczok: Dann für das tatsächliche Release
-# On master push
-# If tag
-# Build artifact
-# Check if release exists (sollte wegen des Tags)
-# Attach artifact
-
+git tag "$VERSION"
+git push --set-upstream origin --tags
 
 # create release
 URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/releases"
@@ -50,7 +50,7 @@ RELEASE_ID=$(jq --raw-output '.id' <<< "$RESPONSE")
 echo "Found release id $RELEASE_ID"
 
 # For each matching file
-for file in $(ls target/Todo*.zip); do
+for file in $(find . -name sem*.jar); do
 
     echo "Processing file ${file}"
 

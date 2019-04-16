@@ -60,10 +60,8 @@ git config --global user.email "${GITHUB_ACTOR}@github-actions.com"
 git config --global user.name "$GITHUB_ACTOR"
 
 git commit -am"prepare release ${VERSION}"
-git tag "${VERSION}"
 
 git push --set-upstream origin "$SOURCE" --force
-git push --set-upstream origin --tags --force
 
 # Check if the branch already has a pull request open
 
