@@ -44,16 +44,10 @@ action "Check for master" {
   args = "branch master"
 }
 
-action "Check is not tag" {
-  uses = "actions/bin/filter@d820d56839906464fb7a57d1b4e1741cf5183efa"
-  args = "not tag"
-  needs = ["Check for master"]
-}
-
 action "Tests" {
   uses = "./.github/docker"
   args = ".github/run-tests.sh"
-  needs = ["Check is not tag"]
+  needs = ["Check for master"]
 }
 
 action "Prepare release PR" {
@@ -67,20 +61,31 @@ action "Prepare release PR" {
 # releases
 workflow "Releases" {
   resolves = ["Release"]
-  on = "push"
+  on = "pull_request"
 }
 
-action "Check is tag" {
+action "Check is merged" {
   uses = "actions/bin/filter@d820d56839906464fb7a57d1b4e1741cf5183efa"
-  needs = ["Check for master"]
-  args = "tag"
+  args = "merged"
+}
+
+action "Check for release branch" {
+  uses = "actions/bin/filter@d820d56839906464fb7a57d1b4e1741cf5183efa"
+  args = "branch prepare-release"
+  needs = ["Check is merged"]
+}
+
+action "Switch to master" {
+  uses = "./.github/docker"
+  args = ".github/switch-master.sh"
+  needs = ["Check for release branch"]
 }
 
 action "Verify release build" {
   uses = "./.github/docker"
   args = ".github/run-tests.sh"
   secrets = ["COVERALLS_TOKEN"]
-  needs = ["Check is tag"]
+  needs = ["Switch to master"]
 }
 
 action "Release" {
