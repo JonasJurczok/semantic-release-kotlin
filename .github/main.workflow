@@ -5,7 +5,7 @@ workflow "Pull Request" {
 }
 
 action "Check PR state" {
-  uses = "actions/bin/filter@d820d56839906464fb7a57d1b4e1741cf5183efa"
+  uses = "actions/bin/filter@master"
   args = "not action closed"
 }
 
@@ -40,7 +40,7 @@ workflow "Prepare release" {
 }
 
 action "Check for master" {
-  uses = "actions/bin/filter@d820d56839906464fb7a57d1b4e1741cf5183efa"
+  uses = "actions/bin/filter@master"
   args = "branch master"
 }
 
@@ -65,12 +65,12 @@ workflow "Releases" {
 }
 
 action "Check is merged" {
-  uses = "actions/bin/filter@d820d56839906464fb7a57d1b4e1741cf5183efa"
+  uses = "actions/bin/filter@master"
   args = "merged true"
 }
 
 action "Check for release branch" {
-  uses = "actions/bin/filter@d820d56839906464fb7a57d1b4e1741cf5183efa"
+  uses = "actions/bin/filter@master"
   args = "branch prepare-release"
   needs = ["Check is merged"]
 }
