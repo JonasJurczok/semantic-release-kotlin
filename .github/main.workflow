@@ -66,7 +66,7 @@ workflow "Releases" {
 
 action "Check is merged" {
   uses = "actions/bin/filter@d820d56839906464fb7a57d1b4e1741cf5183efa"
-  args = "merged"
+  args = "merged true"
 }
 
 action "Check for release branch" {
