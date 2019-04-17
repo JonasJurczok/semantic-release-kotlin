@@ -7,8 +7,7 @@ LABEL "com.github.actions.color"="gray-dark"
 
 LABEL version="1.0.0"
 
-RUN apt-get update -y
-RUN apt-get install curl jq wget -y
+RUN apt-get update -y && apt-get install curl jq wget -y
 
 COPY "run.sh" "/run.sh"
 RUN chmod +x /run.sh
