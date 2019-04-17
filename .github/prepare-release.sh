@@ -47,7 +47,8 @@ git checkout -b "$SOURCE"
 
 # determine next version
 # get latest release
-LATEST_RELEASE=$(curl -sSL -XPOST -H "$AUTH_HEADER" -H "$HEADER" "${REPO_URL}/releases/latest")
+echo "curl -sSL -XGET ${REPO_URL}/releases/latest"
+LATEST_RELEASE=$(curl -sSL -XGET -H "$AUTH_HEADER" -H "$HEADER" "${REPO_URL}/releases/latest")
 
 # download CLI from latest release
 DOWNLOAD_URL=$(echo "$LATEST_RELEASE" | jq '.assets[] | select(.name | test("semrel")).browser_download_url')
