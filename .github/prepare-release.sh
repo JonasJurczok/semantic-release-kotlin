@@ -62,7 +62,7 @@ if [[ ! -f semrel.jar ]]; then
 fi
 
 # run CLI to determine new version
-VERSION=$(java -jar semrel.jar -v .)
+VERSION=$(java -jar semrel.jar .)
 echo "Calculated new version $VERSION"
 
 # version bump
