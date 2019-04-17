@@ -12,8 +12,6 @@
     <artifactId>semantic-release-reactor</artifactId>
     <version>0.1.20190416143445</version>
 
-
-
     <properties>
         <kotlin.version>1.3.21</kotlin.version>
         <kotlin.compiler.incremental>false</kotlin.compiler.incremental>

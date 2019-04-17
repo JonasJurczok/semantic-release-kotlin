@@ -1,6 +1,6 @@
 package com.github.semanticreleasekotlin
 
-data class Version (val major: Int = 0, val minor: Int = 0, val patch: Int = 0) : Comparable<Version> {
+data class Version (val major: Long = 0, val minor: Long = 0, val patch: Long = 0) : Comparable<Version> {
     private val changes: MutableMap<Category, MutableList<ChangelogEntry>> = mutableMapOf()
 
     companion object {
@@ -14,7 +14,7 @@ data class Version (val major: Int = 0, val minor: Int = 0, val patch: Int = 0) 
                 throw IllegalArgumentException("Could not identify semantic version from [$version]. Three components expected")
             }
 
-            return Version(parts.get(0).toInt(),parts.get(1).toInt(),parts.get(2).toInt())
+            return Version(parts.get(0).toLong(),parts.get(1).toLong(),parts.get(2).toLong())
         }
     }
     fun changes(category: Category): List<ChangelogEntry> {
@@ -32,15 +32,15 @@ data class Version (val major: Int = 0, val minor: Int = 0, val patch: Int = 0) 
 
     override fun compareTo(other: Version): Int {
         if (major != other.major) {
-            return major - other.major
+            return (major - other.major).toInt()
         }
 
         if (minor != other.minor) {
-            return minor - other.minor
+            return (minor - other.minor).toInt()
         }
 
         if (patch != other.patch) {
-            return patch - other.patch
+            return (patch - other.patch).toInt()
         }
 
         return 0

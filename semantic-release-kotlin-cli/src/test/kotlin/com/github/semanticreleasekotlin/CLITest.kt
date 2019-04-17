@@ -1,6 +1,7 @@
 package com.github.semanticreleasekotlin
 
 import com.github.semanticreleasekotlin.tools.NoopOutputStream
+import com.github.semanticreleasekotlin.tools.OS
 import com.github.semanticreleasekotlin.tools.StoringAppender
 import com.xenomachina.argparser.ArgParser
 import io.kotlintest.TestCase
@@ -17,8 +18,10 @@ import org.apache.logging.log4j.core.config.Configurator
 import java.io.BufferedReader
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.InputStreamReader
 import java.io.PrintStream
+import java.nio.file.Paths
 
 class CLITest : FeatureSpec() {
 

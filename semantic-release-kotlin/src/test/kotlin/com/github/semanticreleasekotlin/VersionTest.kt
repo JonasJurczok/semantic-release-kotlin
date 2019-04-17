@@ -4,6 +4,7 @@ import io.kotlintest.TestCase
 import io.kotlintest.TestResult
 import io.kotlintest.matchers.boolean.shouldBeFalse
 import io.kotlintest.matchers.boolean.shouldBeTrue
+import io.kotlintest.matchers.numerics.shouldBeGreaterThan
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FeatureSpec
 import java.io.File
@@ -28,8 +29,7 @@ class VersionTest : FeatureSpec() {
         feature("Versions should be read correctly") {
             scenario("Generate next version from git tree") {
 
-                val currentVersion = Version(0, 1, 0);
-                val log = Changelog.fromGit(dir = File("../test/git/2v_unreleased"), from = currentVersion);
+                val log = Changelog.fromGit(dir = File("../test/git/2v_unreleased"));
 
                 log.versions().size.shouldBe(2)
                 log.hasUnreleasedChanges().shouldBeTrue()
@@ -56,12 +56,19 @@ class VersionTest : FeatureSpec() {
             }
 
             scenario("no unreleased changes should not lead to new version.") {
-                println("lalal")
                 val log = Changelog.fromGit(dir = File("../test/git/2v_released"));
 
                 log.hasUnreleasedChanges().shouldBeFalse()
 
                 log.versions().size.shouldBe(2)
+            }
+
+
+            scenario("Check actual git parsing works") {
+                Changelog.resetCommand()
+                val log = Changelog.fromGit(dir = File("."));
+
+                log.versions().size.shouldBeGreaterThan(1)
             }
         }
     }
