@@ -25,7 +25,7 @@ PULLS_URL=$REPO_URL/pulls
 METHOD=POST
 
 
-# We assume we are on the branch releases are created from.
+# We assume we are on the branch releases are created from (master by default).
 # We also assume that we are not already on a tag
 
 GIT_DESCRIBE=$(git describe --tags)
@@ -46,9 +46,21 @@ TARGET="master"
 git checkout -b "$SOURCE"
 
 # determine next version
+# get latest release
+LATEST_RELEASE=$(curl -sSL -XPOST -H "$AUTH_HEADER" -H "$HEADER" "${REPO_URL}/releases/latest")
 
-DATE=$(date +"%Y%m%d%H%M%S")
-VERSION="0.1.${DATE}"
+# download CLI from latest release
+DOWNLOAD_URL=$(echo "$LATEST_RELEASE" | jq '.assets[] | select(.name | test("semrel")).browser_download_url')
+curl -o semrel.jar "$DOWNLOAD_URL"
+
+if [[ ! -f semrel.jar ]]; then
+    echo "Could not download Semantic Release CLI. Aborting."
+    exit -1
+fi
+
+# run CLI to determine new version
+VERSION=$(java -jar semrel.jar .)
+echo "Calculated new version $VERSION"
 
 # version bump
 export MAVEN_OPTS=-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn

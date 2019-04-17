@@ -23,6 +23,7 @@ API_HEADER="Accept: application/vnd.github.${API_VERSION}+json"
 
 # build release
 # TODO: upload to maven central
+export MAVEN_OPTS=-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
 VERSION=$(./mvnw org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version | grep -Ev "Download" -E  | grep -Ev "INFO")
 ./mvnw clean verify
 

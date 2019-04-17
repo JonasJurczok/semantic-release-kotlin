@@ -44,15 +44,9 @@ action "Check for master" {
   args = "branch master"
 }
 
-action "Tests" {
-  uses = "./.github/docker"
-  args = ".github/run-tests.sh"
-  needs = ["Check for master"]
-}
-
 action "Prepare release PR" {
   uses = "./.github/docker"
-  needs = ["Tests"]
+  needs = ["Check for master"]
   secrets = ["GITHUB_TOKEN"]
   args = ".github/prepare-release.sh"
 }
