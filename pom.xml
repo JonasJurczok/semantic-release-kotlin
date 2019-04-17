@@ -10,7 +10,7 @@
 
     <groupId>com.github.semantic-release-kotlin</groupId>
     <artifactId>semantic-release-reactor</artifactId>
-    <version>0.1.20190416143445</version>
+    <version>0.2.0</version>
 
     <properties>
         <kotlin.version>1.3.21</kotlin.version>
