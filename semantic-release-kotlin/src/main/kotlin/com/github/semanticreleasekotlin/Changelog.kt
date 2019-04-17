@@ -48,7 +48,7 @@ class Changelog {
             incrementVersion(latest.get(), changeType)
         } else {
             logger.info("No previous version found. Starting with [0.1.0]")
-            Version(0,1,0)
+            Version(0, 1, 0)
         }
 
         unreleased.forEach { entry ->
@@ -100,7 +100,7 @@ class Changelog {
 
     companion object {
         private val logger = LoggerFactory.getLogger(Changelog::class.java)
-        private val command = "git log --format=\"%d||%B\" --reverse "
+        private val command = "git log --format=%d||%B --reverse "
         private var overwriteCommand: String? = null
         private var parserState: ParserState = LAST_VERSION
 
@@ -125,7 +125,7 @@ class Changelog {
             }
             command += to?.asString() ?: "HEAD"
 
-            val regex = Regex("(\\(tag: (.*)\\))?(\\|\\|)?(.*)")
+            val regex = Regex("(\\(tag: (\\S*\\d*\\.\\d*\\.\\d*\\S*)\\))?(\\|\\|)(.*)")
 
             val changelog = Changelog()
             // iterate through the log in chronological orders
@@ -135,9 +135,10 @@ class Changelog {
 
                 sequence.filter { line -> line.isNotBlank() }.forEach { line: String ->
 
-                    val matchResult = regex.find(line)
+                    logger.trace("Processing line [{}].", line)
+                    val matchResult = regex.find(line.trim())
 
-                    val message = matchResult?.groups?.get(4)?.value ?: ""
+                    val message = matchResult?.groups?.get(4)?.value ?: line
                     val tag = matchResult?.groups?.get(2)?.value
                     val isNewCommit = matchResult?.groups?.get(3) != null
                     if (tag != null) {

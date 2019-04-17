@@ -12,6 +12,8 @@ object OS {
         val arguments = command.split(' ').toTypedArray();
         val process = ProcessBuilder(*arguments)
                 .directory(dir)
+                .redirectOutput(ProcessBuilder.Redirect.PIPE)
+                .redirectError(ProcessBuilder.Redirect.PIPE)
                 .start()
                 .also { it.waitFor(10, TimeUnit.SECONDS) }
 
