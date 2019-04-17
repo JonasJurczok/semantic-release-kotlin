@@ -60,6 +60,7 @@ fi
 
 # run CLI to determine new version
 VERSION=$(java -jar semrel.jar .)
+echo "Calculated new version $VERSION"
 
 # version bump
 export MAVEN_OPTS=-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
