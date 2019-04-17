@@ -52,8 +52,9 @@ LATEST_RELEASE=$(curl -sSL -XGET -H "$AUTH_HEADER" -H "$HEADER" "${REPO_URL}/rel
 
 # download CLI from latest release
 DOWNLOAD_URL=$(echo "$LATEST_RELEASE" | jq '.assets[] | select(.name | test("semrel")).browser_download_url')
-echo "Downloading CLI from $DOWNLOAD_URL"
-wget -O semrel.jar "$DOWNLOAD_URL"
+DOWNLOAD_URL=${DOWNLOAD_URL//\"}
+echo "Downloading CLI from ${DOWNLOAD_URL}"
+wget -O semrel.jar "${DOWNLOAD_URL}"
 
 if [[ ! -f semrel.jar ]]; then
     echo "Could not download Semantic Release CLI. Aborting."
@@ -61,7 +62,7 @@ if [[ ! -f semrel.jar ]]; then
 fi
 
 # run CLI to determine new version
-VERSION=$(java -jar semrel.jar .)
+VERSION=$(java -jar -v semrel.jar .)
 echo "Calculated new version $VERSION"
 
 # version bump
