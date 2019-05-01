@@ -1,7 +1,6 @@
 package com.github.semanticreleasekotlin
 
 import org.slf4j.LoggerFactory
-import java.util.Optional
 
 /**
  * A single entry in a changelog version
@@ -11,7 +10,7 @@ data class ChangelogEntry(val category: Category, val description: String) {
 
         private val logger = LoggerFactory.getLogger(ChangelogEntry::class.java)
 
-        fun fromString(input: String): Optional<ChangelogEntry> {
+        fun fromString(input: String): ChangelogEntry? {
 
             val keyword = input.trim().substringBefore(":")
 
@@ -19,7 +18,7 @@ data class ChangelogEntry(val category: Category, val description: String) {
 
             if (category == null) {
                 logger.debug("Could not find category for input [$input].")
-                return Optional.empty()
+                return null
             }
 
             val description = input.substringAfter(":")
@@ -27,7 +26,7 @@ data class ChangelogEntry(val category: Category, val description: String) {
 
             logger.info("Created changelog entry [{}].", entry)
 
-            return Optional.of(entry)
+            return entry
         }
     }
 

@@ -5,6 +5,7 @@ import io.kotlintest.TestResult
 import io.kotlintest.matchers.boolean.shouldBeFalse
 import io.kotlintest.matchers.boolean.shouldBeTrue
 import io.kotlintest.matchers.numerics.shouldBeGreaterThan
+import io.kotlintest.matchers.types.shouldNotBeNull
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FeatureSpec
 import java.io.File
@@ -37,9 +38,9 @@ class VersionTest : FeatureSpec() {
                 val optionalRelease = log.newRelease()
                 log.versions().size.shouldBe(3)
 
-                optionalRelease.isPresent.shouldBeTrue()
+                optionalRelease.shouldNotBeNull()
 
-                val newVersion = optionalRelease.get()
+                val newVersion = optionalRelease!!
 
                 newVersion.major.shouldBe(0)
                 newVersion.minor.shouldBe(3)

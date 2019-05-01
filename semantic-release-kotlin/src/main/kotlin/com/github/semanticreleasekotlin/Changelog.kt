@@ -5,7 +5,6 @@ import com.github.semanticreleasekotlin.Changelog.Companion.ParserState.NEW_VERS
 import com.github.semanticreleasekotlin.tools.OS
 import org.slf4j.LoggerFactory
 import java.io.File
-import java.util.Optional
 
 
 /**
@@ -27,26 +26,27 @@ import java.util.Optional
 class Changelog {
     private val versions: MutableMap<String, Version> = HashMap()
     private val unreleased: MutableList<ChangelogEntry> = mutableListOf()
-    private var latest: Optional<Version> = Optional.empty()
+    private var latest: Version? = null
 
     fun hasUnreleasedChanges(): Boolean {
         return unreleased.size > 0
     }
 
-    fun newRelease(): Optional<Version> {
+    fun newRelease(): Version? {
         val changeType = unreleased.map { entry -> entry.category }
                 .map { category -> category.changeType }
                 .minBy { type -> type.ordinal }
 
         if (changeType == null) {
             logger.info("No unreleased changes found.")
-            return Optional.empty()
+            return null
         }
 
-        lateinit var version: Version
-        version = if (latest.isPresent) {
-            incrementVersion(latest.get(), changeType)
-        } else {
+        val version: Version?
+
+        version = latest?.let {
+            incrementVersion(it, changeType)
+        } ?: run {
             logger.info("No previous version found. Starting with [0.1.0]")
             Version(0, 1, 0)
         }
@@ -59,7 +59,7 @@ class Changelog {
 
         versions[version.asString()] = version
 
-        return Optional.of(version)
+        return version
     }
 
     private fun incrementVersion(version: Version, changeType: ChangeType): Version {
@@ -89,13 +89,9 @@ class Changelog {
     private fun addVersion(version: Version) {
         versions[version.asString()] = version
 
-        if (latest.isPresent) {
-            if (latest.get() < version) {
-                latest = Optional.of(version)
-            }
-        } else {
-            latest = Optional.of(version)
-        }
+        latest = latest?.let {
+            it.takeIf { it >= version } ?: version
+        } ?: version
     }
 
     companion object {
@@ -150,17 +146,14 @@ class Changelog {
 
                     val entry = ChangelogEntry.fromString(message)
 
-                    entry.ifPresent {
-                        when(parserState) {
+                    entry?.let {
+                        when (parserState) {
                             LAST_VERSION -> {
                                 val latest = changelog.latest
-                                latest.ifPresentOrElse( {
-                                    version -> version.addChange(entry.get())
-                                }, {
-                                    changes.add(entry.get())
-                                })
+                                latest?.addChange(it) ?: changes.add(it)
+
                             }
-                            NEW_VERSION -> changes.add(entry.get())
+                            NEW_VERSION -> changes.add(it)
                         }
                     }
 
