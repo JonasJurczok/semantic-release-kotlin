@@ -13,7 +13,11 @@ if [[ "$ACTION" != "closed" ]] && [[ "$MERGED" == "false" ]]; then
 
   echo "Creating merge result for head $HEAD and base $BASE"
 
+  echo "event content:"
   cat "$GITHUB_EVENT_PATH"
+
+  echo "git remotes"
+  git remote -v
 
   git checkout "$BASE"
   git checkout "$HEAD"
