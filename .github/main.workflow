@@ -51,7 +51,6 @@ action "Prepare release PR" {
   args = ".github/prepare-release.sh"
 }
 
-
 # releases
 workflow "Releases" {
   resolves = ["Release"]
