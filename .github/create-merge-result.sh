@@ -31,10 +31,8 @@ if [[ "$ACTION" != "closed" ]] && [[ "$MERGED" == "false" ]]; then
 
     git fetch pr-head
 
-    rm -f pr.diff
-
     git checkout "$BASE"
-    git checkout pr-head "$HEAD"
+    git checkout "$HEAD"
     git merge "$BASE"
 
   else
