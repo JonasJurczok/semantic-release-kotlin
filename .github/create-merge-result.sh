@@ -30,16 +30,15 @@ if [[ "$ACTION" != "closed" ]] && [[ "$MERGED" == "false" ]]; then
     git remote -v
 
     git fetch pr-head
-
-    git checkout "$BASE"
-    git checkout "$HEAD"
-    git merge "$BASE"
-
   else
     echo "PR is from local repo"
-
-    git checkout "$BASE"
-    git checkout "$HEAD"
-    git rebase "$BASE"
   fi
+
+  git config --global user.email "${GITHUB_ACTOR}@github-actions.com"
+  git config --global user.name "$GITHUB_ACTOR"
+
+  git checkout "$BASE"
+  git checkout "$HEAD"
+  git rebase "$BASE"
+
 fi
