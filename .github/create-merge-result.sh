@@ -23,16 +23,19 @@ if [[ "$ACTION" != "closed" ]] && [[ "$MERGED" == "false" ]]; then
   if [[ "$FORK" == "true" ]]; then
     echo "PR is from a fork."
 
-    DIFF_URL=$(jq --raw-output .pull_request.diff_url "$GITHUB_EVENT_PATH")
-    echo "Downloading diff from $DIFF_URL ."
+    CLONE_URL=$(jq --raw-output .pull_request.head.repo.clone_url "$GITHUB_EVENT_PATH")
+    echo "Fetching branch from $CLONE_URL."
 
-    curl -L -o pr.diff "$DIFF_URL"
+    git remote add pr-head "$CLONE_URL"
+    git remote -v
 
-    echo "Applying diff to current branch"
-
-    git apply pr.diff
+    git fetch pr-head
 
     rm -f pr.diff
+
+    git checkout "$BASE"
+    git checkout pr-head "$HEAD"
+    git merge "$BASE"
 
   else
     echo "PR is from local repo"
