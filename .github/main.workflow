@@ -19,7 +19,7 @@ action "Run PR tests" {
   uses = "./.github/docker"
   needs = ["Create merge result"]
   args = ".github/run-tests.sh"
-  secrets = ["COVERALLS_TOKEN"]
+  secrets = ["COVERALLS_TOKEN", "GITHUB_TOKEN"]
 }
 
 # pull-request cleanup
