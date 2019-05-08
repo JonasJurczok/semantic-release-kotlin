@@ -5,10 +5,11 @@ set -eu
 AUTH_HEADER="Authorization: token ${GITHUB_TOKEN}"
 API_VERSION=v3
 API_HEADER="Accept: application/vnd.github.${API_VERSION}+json"
-HASH=$(git rev-parse HEAD)
+HASH=$(jq --raw-output .pull_request.head.sha "$GITHUB_EVENT_PATH")
 URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/${HASH}"
 
 report_status() {
+  echo "Reporting commit status $1 for sha $HASH"
   curl -sSL -XPOST -H "$AUTH_HEADER" -H "$API_HEADER" "$URL" -d "{ \"state\": \"$1\", \"description\": \"Github Actions CI\", \"context\": \"Github Actions CI\"}"
 }
 
