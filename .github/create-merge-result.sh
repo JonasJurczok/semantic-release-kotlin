@@ -40,6 +40,6 @@ if [[ "$ACTION" != "closed" ]] && [[ "$MERGED" == "false" ]]; then
 
     git checkout "$BASE"
     git checkout "$HEAD"
-    git merge "$BASE"
+    git rebase "$BASE"
   fi
 fi
