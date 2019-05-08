@@ -24,8 +24,8 @@ class CLI(private val config: Config) {
 
         if (log.hasUnreleasedChanges()) {
             val release = log.newRelease()
-            if (release.isPresent) {
-                outputStream.println(release.get().asString())
+            release?.let {
+                outputStream.println(release.asString())
             }
         } else {
             logger.info("No new version to create. Nothing to do.")
