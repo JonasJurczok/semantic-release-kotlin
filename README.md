@@ -15,7 +15,6 @@ Also I wanted to learn Kotlin.
 The categories are the same as in the semantic release project.
 The keywords that can be used are slightly different to improve commit message readability. 
  
-
 ### Usage?
 #### Background
 
