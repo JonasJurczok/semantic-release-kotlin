@@ -30,6 +30,10 @@ class CLI(private val config: Config) {
         } else {
             logger.info("No new version to create. Nothing to do.")
         }
+
+        if (config.generateChangelog) {
+            Printer.printChangelog(log)
+        }
     }
 
     companion object {

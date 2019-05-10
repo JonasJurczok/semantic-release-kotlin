@@ -35,20 +35,19 @@ class VersionTest : FeatureSpec() {
                 log.versions().size.shouldBe(2)
                 log.hasUnreleasedChanges().shouldBeTrue()
 
-                val optionalRelease = log.newRelease()
+                val newRelease = log.newRelease()
                 log.versions().size.shouldBe(3)
 
-                optionalRelease.shouldNotBeNull()
+                newRelease.shouldNotBeNull()
 
-                val newVersion = optionalRelease!!
+                val test: Version = newRelease!!
+                newRelease.major.shouldBe(0)
+                newRelease.minor.shouldBe(3)
+                newRelease.patch.shouldBe(0)
 
-                newVersion.major.shouldBe(0)
-                newVersion.minor.shouldBe(3)
-                newVersion.patch.shouldBe(0)
+                newRelease.changes(Category.FEATURE).size.shouldBe(2)
 
-                newVersion.changes(Category.FEATURE).size.shouldBe(2)
-
-                val changes = newVersion.changes(Category.BUGFIX);
+                val changes = newRelease.changes(Category.BUGFIX);
                 changes.size.shouldBe(2);
 
                 val change = changes.get(0)

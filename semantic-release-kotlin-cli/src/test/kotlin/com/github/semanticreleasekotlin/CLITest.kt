@@ -7,6 +7,8 @@ import com.xenomachina.argparser.ArgParser
 import io.kotlintest.TestCase
 import io.kotlintest.TestCaseOrder
 import io.kotlintest.TestResult
+import io.kotlintest.matchers.file.shouldExist
+import io.kotlintest.matchers.file.shouldNotExist
 import io.kotlintest.matchers.numerics.shouldBeGreaterThan
 import io.kotlintest.matchers.string.shouldNotBeBlank
 import io.kotlintest.shouldBe
@@ -42,6 +44,9 @@ class CLITest : FeatureSpec() {
         appender.clear()
 
         Changelog.resetCommand()
+
+        // delete Changelog file
+        File("CHANGELOG.md").delete()
     }
 
     init {
@@ -120,6 +125,28 @@ class CLITest : FeatureSpec() {
              * changelog to custom location
              */
 
+            scenario("Without flag, no changelog is generated") {
+                val dir = "../test/git/2v_released"
+
+                val args = arrayOf(dir)
+                val config: Config = ArgParser(args).parseInto(::Config)
+
+                CLI(config).run(System.out)
+
+                File("CHANGELOG.md").shouldNotExist()
+
+            }
+
+            scenario("Full changelog generated") {
+                val dir = "../test/git/2v_released"
+
+                val args = arrayOf("--generate-changelog", dir)
+                val config: Config = ArgParser(args).parseInto(::Config)
+
+                CLI(config).run(System.out)
+
+                File("CHANGELOG.md").shouldExist()
+            }
         }
     }
 }

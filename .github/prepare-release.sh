@@ -42,7 +42,6 @@ fi
 SOURCE="prepare-release"
 TARGET="master"
 
-
 git checkout -b "$SOURCE"
 
 # determine next version
@@ -62,14 +61,12 @@ if [[ ! -f semrel.jar ]]; then
 fi
 
 # run CLI to determine new version
-VERSION=$(java -jar semrel.jar .)
+VERSION=$(java -jar semrel.jar --generate-changelog .)
 echo "Calculated new version $VERSION"
 
 # version bump
 export MAVEN_OPTS=-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
 ./mvnw versions:set versions:commit -B -DnewVersion="${VERSION}"
-
-# TODO: generate changelog
 
 git config --global user.email "${GITHUB_ACTOR}@github-actions.com"
 git config --global user.name "$GITHUB_ACTOR"
