@@ -15,7 +15,7 @@ class ChangelogPrinterTest: FeatureSpec() {
 
     override fun afterTest(testCase: TestCase, result: TestResult) {
         Changelog.resetCommand()
-        //File("CHANGELOG.md").delete()
+        File("CHANGELOG.md").delete()
     }
 
     /**
