@@ -147,6 +147,16 @@ class CLITest : FeatureSpec() {
 
                 File("CHANGELOG.md").shouldExist()
             }
+
+            scenario("Descending ordering") {
+                // ascending is the default case and can be ignored
+                val dir = "../test/git/2v_released"
+
+                val args = arrayOf("--generate-changelog", dir)
+                val config: Config = ArgParser(args).parseInto(::Config)
+
+                CLI(config).run(System.out)
+            }
         }
     }
 }

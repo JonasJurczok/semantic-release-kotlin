@@ -32,7 +32,7 @@ class CLI(private val config: Config) {
         }
 
         if (config.generateChangelog) {
-            Printer.printChangelog(log)
+            Printer.printChangelog(log, ordering = config.ordering)
         }
     }
 

@@ -10,19 +10,27 @@ class Config(parser: ArgParser) {
 
     val generateChangelog by parser.flagging("--generate-changelog", help = "Generate a changelog. Defaults to false").default(false)
 
+    val ordering by parser.mapping(
+            "--ascending" to Printer.Ordering.ASCENDING,
+            "--descending" to Printer.Ordering.DESCENDING,
+            help = "Ordering of the changelog entries").default(Printer.Ordering.ASCENDING)
+
+    val verbose by parser.flagging("-v", "--verbose", help="Enable verbose output.")
+
+    /*
+
     val output by parser.storing("--output", help = "Destination of the changelog file. Defaults to CHANGELOG.md").default("CHANGELOG.md")
 
     val format by parser.storing("--format", help = "The format used for the genrated changelog. Can be either an existing format (TODO Link), a path to a file containing a template string, or a string interpreted as a template (TODO link).").default("MARKDOWN")
 
     val append by parser.mapping("--append-top" to Append.TOP, "--append-bottom" to Append.BOTTOM, help = "Defines where the changelog should be appended if the output file already exists. Defaults to TOP").default(Append.TOP)
-
+*/
     val directory by parser.positional("Path to the directory where the versions should be generated.")
 
-    // TODO: verbose output to stdout or stderr?
-    val verbose by parser.flagging("-v", "--verbose", help="Enable verbose output.")
 
-    enum class Append {
+
+    /*enum class Append {
         TOP,
         BOTTOM
-    }
+    }*/
 }
