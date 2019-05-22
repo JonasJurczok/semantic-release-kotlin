@@ -22,7 +22,7 @@ data class Version (val major: Long = 0, val minor: Long = 0, val patch: Long = 
     }
 
     fun changes(): Map<Category, List<ChangelogEntry>> {
-        TODO("implement")
+        return changes.toMap()
     }
 
     fun addChange(change: ChangelogEntry) {

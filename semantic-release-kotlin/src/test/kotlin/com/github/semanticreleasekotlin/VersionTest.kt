@@ -30,34 +30,32 @@ class VersionTest : FeatureSpec() {
         feature("Versions should be read correctly") {
             scenario("Generate next version from git tree") {
 
-                val log = Changelog.fromGit(dir = File("../test/git/2v_unreleased"));
+                val log = Changelog.fromGit(dir = File("../test/git/2v_unreleased"))
 
                 log.versions().size.shouldBe(2)
                 log.hasUnreleasedChanges().shouldBeTrue()
 
-                val optionalRelease = log.newRelease()
+                val newRelease: Version = log.newRelease()!!
                 log.versions().size.shouldBe(3)
 
-                optionalRelease.shouldNotBeNull()
+                newRelease.shouldNotBeNull()
 
-                val newVersion = optionalRelease!!
+                newRelease.major.shouldBe(0)
+                newRelease.minor.shouldBe(3)
+                newRelease.patch.shouldBe(0)
 
-                newVersion.major.shouldBe(0)
-                newVersion.minor.shouldBe(3)
-                newVersion.patch.shouldBe(0)
+                newRelease.changes(Category.FEATURE).size.shouldBe(2)
 
-                newVersion.changes(Category.FEATURE).size.shouldBe(2)
+                val changes = newRelease.changes(Category.BUGFIX)
+                changes.size.shouldBe(2)
 
-                val changes = newVersion.changes(Category.BUGFIX);
-                changes.size.shouldBe(2);
-
-                val change = changes.get(0)
-                change.category.shouldBe(Category.BUGFIX);
-                change.description.shouldBe("second bugfix");
+                val change = changes[0]
+                change.category.shouldBe(Category.BUGFIX)
+                change.description.shouldBe("second bugfix")
             }
 
             scenario("no unreleased changes should not lead to new version.") {
-                val log = Changelog.fromGit(dir = File("../test/git/2v_released"));
+                val log = Changelog.fromGit(dir = File("../test/git/2v_released"))
 
                 log.hasUnreleasedChanges().shouldBeFalse()
 
@@ -67,7 +65,7 @@ class VersionTest : FeatureSpec() {
 
             scenario("Check actual git parsing works") {
                 Changelog.resetCommand()
-                val log = Changelog.fromGit(dir = File("."));
+                val log = Changelog.fromGit(dir = File("."))
 
                 log.versions().size.shouldBeGreaterThan(1)
             }
